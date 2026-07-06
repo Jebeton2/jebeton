@@ -1,8 +1,7 @@
-import discord
-from discord.ext import commands
-import asyncio
+import os
 
-TOKEN = "MTUxMjY1OTQyNDYwOTU3MDgxNg.Geu7j3.veeuFgpjTuDSsG2bhQ_8u35Owv5CO59FdxP8QQ"
+TOKEN = os.getenv("MTUxMjY1OTQyNDYwOTU3MDgxNg.Geu7j3.veeuFgpjTuDSsG2bhQ_8u35Owv5CO59FdxP8QQ")
+bot.run(TOKEN)
 
 intents = discord.Intents.default()
 intents.message_content = True
