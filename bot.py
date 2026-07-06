@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import asyncio
 
 TOKEN = "MTUxMjY1OTQyNDYwOTU3MDgxNg.G4F4L0.Pn3cx--UY6EWTrvdoGrZdBPFUs1cd94HZDmIFw"
 
@@ -7,16 +8,20 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bot(command_prefix="!", intents=intents, help_command=None)
 
 
-# ─────────────── START ───────────────
+# ─────────────────────────────
+# START
+# ─────────────────────────────
 @bot.event
 async def on_ready():
     print(f"Zalogowano jako {bot.user}")
 
 
-# ─────────────── TICKETY VIEW ───────────────
+# ─────────────────────────────
+# TICKET VIEW
+# ─────────────────────────────
 class TicketView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
@@ -38,7 +43,7 @@ class TicketView(discord.ui.View):
         overwrites = {
             guild.default_role: discord.PermissionOverwrite(view_channel=False),
             interaction.user: discord.PermissionOverwrite(view_channel=True, send_messages=True),
-            guild.me: discord.PermissionOverwrite(view_channel=True)
+            guild.me: discord.PermissionOverwrite(view_channel=True, send_messages=True)
         }
 
         channel = await guild.create_text_channel(
@@ -61,7 +66,9 @@ class TicketView(discord.ui.View):
         )
 
 
-# ─────────────── ZAMYKANIE TICKETA ───────────────
+# ─────────────────────────────
+# ZAMYKANIE TICKETA
+# ─────────────────────────────
 class CloseTicketView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
@@ -70,13 +77,13 @@ class CloseTicketView(discord.ui.View):
     async def close_ticket(self, interaction: discord.Interaction, button: discord.ui.Button):
 
         await interaction.response.send_message("🔒 Zamykam ticket...")
-
-        await discord.utils.sleep_until(discord.utils.utcnow())
-
+        await asyncio.sleep(3)
         await interaction.channel.delete()
 
 
-# ─────────────── PANEL ───────────────
+# ─────────────────────────────
+# PANEL
+# ─────────────────────────────
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def panel(ctx):
@@ -90,5 +97,7 @@ async def panel(ctx):
     await ctx.send(embed=embed, view=TicketView())
 
 
-# ─────────────── START BOT ───────────────
+# ─────────────────────────────
+# START BOT
+# ─────────────────────────────
 bot.run(TOKEN)
